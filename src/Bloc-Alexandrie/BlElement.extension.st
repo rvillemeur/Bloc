@@ -119,9 +119,13 @@ BlElement >> aeDrawIgnoringOpacityAndTransformationOn: aeCanvas [
 BlElement >> aeDrawInSameLayerOn: aCanvas [
 
 	(self isTransparent not and: [
-	self isVisible and: [
-	self wantsSeparateCompositingLayer not ] ])
+		 self isVisible and: [ self wantsSeparateCompositingLayer not ] ])
 		ifTrue: [ self aeDrawOn: aCanvas ]
+		ifFalse: [
+			self hasCompositionLayer ifFalse: [
+				self compositionLayer:
+					(BAAxisAlignedCompositionLayer newFor: self) ].
+			self compositionLayer paintOn: aCanvas ]
 ]
 
 { #category : #'*Bloc-Alexandrie' }
@@ -144,5 +148,5 @@ BlElement >> aeFullDrawOn: aCanvas [
 
 	self aeDrawInSameLayerOn: aCanvas.
 
-	self aeCompositionLayersSortedByElevationDo: [ :each | each paintOn: aCanvas ]
+	"self aeCompositionLayersSortedByElevationDo: [ :each | each paintOn: aCanvas ]"
 ]
